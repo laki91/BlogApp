@@ -1,25 +1,52 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react'
+import { BrowserRouter, Route } from 'react-router-dom'
+import BlogView from './BlogView/BlogView'
+import Header from './Header/Header'
+import Home from './Home/Home'
+import Login from './Login/Login'
+import Register from './Register/Register'
+import dbBlogs from './DbBlogs/DbBlogs'
+import axios from 'axios'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import store from './store'
+import { Provider } from 'react-redux'
+import User from './User/User'
+
+
+export default function App() {
+
+    const [state, setState] = useState([
+        dbBlogs
+    ])
+
+    useEffect(()=> {
+        axios.get('/data')
+            .then(res => {
+                console.log(res.data);
+            })
+    },[])
+    
+
+    return (
+        <Provider store={store}>
+        <BrowserRouter>
+            <Header />
+            <Route path='/' exact>
+                <Home dbBlogs={dbBlogs}  />
+            </Route>
+            <Route path='/login'>
+                <Login />
+            </Route>
+            <Route path='/register'>
+                <Register />
+            </Route>
+            <Route path='/blog/:id'>
+                <BlogView dbBlogs={dbBlogs}  />
+            </Route>
+            <Route path='/user'>
+                <User />
+            </Route>
+        </BrowserRouter>
+        </Provider>
+    )
 }
-
-export default App;
